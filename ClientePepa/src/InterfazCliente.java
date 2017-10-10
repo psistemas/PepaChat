@@ -2,6 +2,11 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -40,7 +45,17 @@ public class InterfazCliente extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnSend){
-           
+            try {
+                Socket socketCliente = new Socket("192.168.1.214", 9200);
+                DataOutputStream flujoSalida = new DataOutputStream(socketCliente.getOutputStream());
+                flujoSalida.writeUTF(textField.getText());
+                
+                textField.setText("");
+                flujoSalida.close();
+                socketCliente.close();
+            } catch (IOException ex) {
+                System.out.println("Exception de tipo IOException: " + ex.getMessage());
+            }
         }
     }
     

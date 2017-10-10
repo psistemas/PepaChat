@@ -1,5 +1,8 @@
 
 import java.awt.BorderLayout;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,12 +12,13 @@ import javax.swing.JTextArea;
  *
  * @author Junior Garcia
  */
-public class InterfazServidor extends JFrame{
+public class InterfazServidor extends JFrame implements Runnable {
 
     JTextArea textArea;
     JButton btnSend;
 
     public InterfazServidor() {
+
         super("PepaServer");
         setSize(300, 350);
         setLocationRelativeTo(null);
@@ -32,5 +36,24 @@ public class InterfazServidor extends JFrame{
         add(panelChat, BorderLayout.CENTER);
     }
 
-  
+    @Override
+    public void run() {
+        String mensaje;
+        while (true) {
+            try {
+                ServerSocket server = new ServerSocket(9200);
+                Socket socketAux = server.accept();
+                DataInputStream flujoEntrada = new DataInputStream(socketAux.getInputStream());
+                mensaje = flujoEntrada.readUTF();
+
+                textArea.append(mensaje + "\n");
+                flujoEntrada.close();
+                socketAux.close();
+                server.close();
+            } catch (IOException ex) {
+                System.out.println("Exception :" + ex.getMessage());
+            }
+        }
+    }
+
 }

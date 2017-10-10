@@ -8,5 +8,7 @@ public class Main {
         InterfazServidor interfaz = new InterfazServidor();
         interfaz.setVisible(true);
         
+       Thread hiloServer = new Thread(interfaz);
+       hiloServer.start();
     }
 }
